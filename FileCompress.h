@@ -8,7 +8,7 @@
 using namespace std;
 
 struct CharInfo {
-	char _ch;
+	unsigned char _ch;
 	size_t _count;
 	string _code;
 
@@ -44,8 +44,8 @@ public:
 	{
 		//1.统计文件中字符的个数
 		ifstream ifs(file);
-		char ch;
-		while ( ifs.get(ch) )
+		unsigned char ch;
+		while ( ifs.get((char&)ch) )
 			_hashInfos[ch]._count++;
 
 		ifs.close();
@@ -108,8 +108,8 @@ public:
 		ifstream ifs(file);
 		int i = 0;
 		char buf = 0;
-		char ch = 0;
-		while (ifs.get(ch))
+		unsigned char ch;
+		while (ifs.get((char&)ch))
 		{
 			string code = _hashInfos[ch]._code;
 			for (size_t j = 0; j < code.size(); j++)
@@ -138,7 +138,7 @@ public:
 	{
 		//构建huffman树
 		struct Tem {
-			char _ch;
+			unsigned char _ch;
 			size_t _count;
 		}tem;
 
@@ -167,9 +167,9 @@ public:
 
 		//开始解压
 		int count = tree.GetRoot()->_val._count;
-		char buf;
+		unsigned char buf;
 		Node* root = tree.GetRoot();
-		while (char ch = fgetc(fp))
+		while (unsigned char ch = fgetc(fp))
 		{
 			for (int i = 0; i < 8; i++)
 			{
