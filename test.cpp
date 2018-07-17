@@ -3,8 +3,9 @@
 
 int main()
 {
-	TestFileCompress();
-	UnDecompression();
+	//TestFileCompress();
+	MP3();
+	//UnDecompression();
 
 
 	//system("pause");

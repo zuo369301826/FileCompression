@@ -1,6 +1,11 @@
 #pragma once
 #pragma warning(disable:4996)
 
+#define MP3_NAME "1.png"
+#define MP3_NAME_UN  "1.png.Huffman"
+#define FILE_NAME "input.txt"
+#define FILE_NAME_UN  "input.txt.Huffman"
+
 #include <string>
 #include <fstream>
 
@@ -43,13 +48,13 @@ public:
 	void Compress(const char* file)
 	{
 		//1.统计文件中字符的个数
+		//io流
 		ifstream ifs(file);
 		unsigned char ch;
 		while ( ifs.get((char&)ch) )
 			_hashInfos[ch]._count++;
-
 		ifs.close();
-		
+	
 		//构建huffman树
 		CharInfo invalid;
 		invalid._count = 0;
@@ -88,7 +93,7 @@ public:
 		//为解压输入统计结果
 		FILE* fp = fopen(name.c_str(), "wb");
 		struct Tem {
-			char _ch;
+			unsigned char _ch;
 			size_t _count;
 		}tem;
 		for (int index = 0; index < 255; index++)
@@ -167,7 +172,6 @@ public:
 
 		//开始解压
 		int count = tree.GetRoot()->_val._count;
-		unsigned char buf;
 		Node* root = tree.GetRoot();
 
 		while ( count>0 )  //用总量来控制循环，防止没有解压完，就退出  while( unsigned char ch = fgetc(fp) )
@@ -205,19 +209,64 @@ public:
 		fclose(fp);
 	}
 
+	void CompressMP3(const char* file)
+	{
+
+		string name = file;
+		name += ".un";
+		ofstream ofs(name);
+
+		//1.统计文件中字符的个数
+		//io流
+		//ifstream ifs(file);
+		//unsigned char ch;
+		//while (ifs.get((char&)ch))
+		//	_hashInfos[ch]._count++;
+		//ifs.close();
+
+		FILE * fp = fopen(file, "rb");
+		unsigned int ch;
+		ch = fgetc(fp);
+		int num = 0;
+		while ((int)ch != -1)
+		{
+			++num;
+			_hashInfos[ch]._count++;
+			ofs.put((char)ch);
+			ch = fgetc(fp);
+		}
+		fclose(fp);
+
+
+
+
+		//构建huffman树
+		CharInfo invalid;
+		invalid._count = 0;
+		HuffmanTree<CharInfo> tree(_hashInfos, 256, invalid);
+		GenerateHuffmanCode(tree.GetRoot());
+		Decompression(file);
+	}
+
 
 private:
 	CharInfo _hashInfos[256];
 };
 
+void MP3()
+{
+	FileCompress fc;
+	fc.CompressMP3(MP3_NAME);
+}
+
 void TestFileCompress()
 {
 	FileCompress fc;
-	fc.Compress("input.txt");
+	fc.Compress(FILE_NAME);
 }
 
 void UnDecompression()
 {
 	FileCompress fc;
-	fc.UnDecompression("input.txt.Huffman");
+	fc.UnDecompression(MP3_NAME_UN);
 }
