@@ -169,8 +169,10 @@ public:
 		int count = tree.GetRoot()->_val._count;
 		unsigned char buf;
 		Node* root = tree.GetRoot();
-		while (unsigned char ch = fgetc(fp))
+
+		while ( count>0 )  //用总量来控制循环，防止没有解压完，就退出  while( unsigned char ch = fgetc(fp) )
 		{
+			unsigned char ch = fgetc(fp);
 			for (int i = 0; i < 8; i++)
 			{
 				if ( (ch & (1 << i)) == 0)
@@ -181,7 +183,7 @@ public:
 						ofs.put(root->_val._ch);
 						--count;
 						if (count <= 0)
-							return;
+							break;
 						root = tree.GetRoot();
 					}
 				}
@@ -193,13 +195,11 @@ public:
 						ofs.put(root->_val._ch);
 						--count;
 						if (count <= 0)
-							return;
+							break;
 						root = tree.GetRoot();
 					}
 				}
 			}
-			if (count <= 0)
-				break;
 		}
 		ofs.close();
 		fclose(fp);

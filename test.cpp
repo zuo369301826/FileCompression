@@ -7,6 +7,6 @@ int main()
 	UnDecompression();
 
 
-	system("pause");
+	//system("pause");
 	return 0;
 }
